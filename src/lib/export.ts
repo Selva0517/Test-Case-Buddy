@@ -19,8 +19,7 @@ function escapeCsvCell(cell: string | string[]): string {
         return '""';
     }
     const text = Array.isArray(cell) ? cell.map((s, i) => `${i+1}. ${s}`).join('\n') : String(cell);
-    const
-     escapedText = text.replace(/"/g, '""');
+    const escapedText = text.replace(/"/g, '""');
     return `"${escapedText}"`;
 }
 
@@ -49,15 +48,13 @@ Comments: ${tc.comments}
 export function exportToCsv(testCases: TestCase[]): string {
   const headers = [
     'Test Case ID',
-    'Title',
-    'Description',
+    'Title / Description',
     'Preconditions',
     'Test Steps',
     'Expected Result',
     'Actual Result',
     'Status (Pass/Fail)',
-    'Priority',
-    'Severity',
+    'Priority / Severity',
     'Comments / Attachments'
   ];
   
@@ -66,15 +63,13 @@ export function exportToCsv(testCases: TestCase[]): string {
   const rows = testCases.map(tc => {
     return [
       escapeCsvCell(tc.id),
-      escapeCsvCell(tc.title),
-      escapeCsvCell(tc.description),
+      escapeCsvCell(`${tc.title}\n${tc.description}`),
       escapeCsvCell(tc.preconditions),
       escapeCsvCell(tc.steps),
       escapeCsvCell(tc.expectedResult),
       escapeCsvCell(tc.actualResult),
       escapeCsvCell(tc.status),
-      escapeCsvCell(tc.priority),
-      escapeCsvCell(tc.severity),
+      escapeCsvCell(`${tc.priority} / ${tc.severity}`),
       escapeCsvCell(tc.comments)
     ].join(',');
   }).join('\n');

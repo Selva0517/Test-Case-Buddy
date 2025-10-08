@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Wand2, Loader2 } from 'lucide-react';
+import { Wand2, Loader2, Sparkles } from 'lucide-react';
 
 interface GeneratorFormProps {
   requirements: string;
@@ -14,7 +14,9 @@ interface GeneratorFormProps {
   includeDetails: boolean;
   setIncludeDetails: (value: boolean) => void;
   onSubmit: () => void;
-  isLoading: boolean;
+  onCorrect: () => void;
+  isGenerating: boolean;
+  isCorrecting: boolean;
 }
 
 export default function GeneratorForm({
@@ -23,12 +25,16 @@ export default function GeneratorForm({
   includeDetails,
   setIncludeDetails,
   onSubmit,
-  isLoading,
+  onCorrect,
+  isGenerating,
+  isCorrecting,
 }: GeneratorFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
   };
+  
+  const isLoading = isGenerating || isCorrecting;
 
   return (
     <Card className="h-full shadow-lg bg-card/50 backdrop-blur-sm">
@@ -54,7 +60,7 @@ export default function GeneratorForm({
               disabled={isLoading}
             />
           </div>
-          <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="flex items-center justify-between rounded-lg border p-3 flex-wrap gap-4">
             <div className="flex items-center space-x-3">
               <Switch 
                 id="include-details" 
@@ -64,19 +70,34 @@ export default function GeneratorForm({
               />
               <Label htmlFor="include-details">Include detailed steps</Label>
             </div>
-            <Button type="submit" disabled={isLoading || !requirements} size="lg">
-              {isLoading ? (
-                <>
-                  <Loader2 className="animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 />
-                  Generate
-                </>
-              )}
-            </Button>
+            <div className='flex items-center gap-2'>
+              <Button type="button" variant="outline" onClick={onCorrect} disabled={isLoading || !requirements} size="lg">
+                {isCorrecting ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Correcting...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles />
+                    Auto-Correct
+                  </>
+                )}
+              </Button>
+              <Button type="submit" disabled={isLoading || !requirements} size="lg">
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 />
+                    Generate
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </CardContent>

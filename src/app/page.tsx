@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { generateTestCasesFromRequirements } from '@/ai/flows/generate-test-cases-from-requirements';
 import { parseUserInputForTestCases } from '@/ai/flows/parse-user-input-for-test-cases';
+import { correctRequirements as correctRequirementsFlow } from '@/ai/flows/correct-requirements';
 import { useToast } from '@/hooks/use-toast';
 import { type TestCase } from '@/lib/types';
 import Header from '@/components/app/header';
@@ -21,6 +22,7 @@ export default function Home() {
   
   const [generating, setGenerating] = useState(false);
   const [parsing, setParsing] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
   
   const { toast } = useToast();
 
@@ -61,6 +63,28 @@ export default function Home() {
       });
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleCorrectRequirements = async () => {
+    if (!requirements.trim() || correcting) return;
+    setCorrecting(true);
+    try {
+      const result = await correctRequirementsFlow({ requirements });
+      setRequirements(result.correctedRequirements);
+      toast({
+        title: "Auto-Correct Successful",
+        description: "Your requirements have been refined by AI.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Auto-Correct Failed",
+        description: "An error occurred while correcting your requirements.",
+      });
+    } finally {
+      setCorrecting(false);
     }
   };
   
@@ -108,7 +132,9 @@ export default function Home() {
               includeDetails={includeDetails}
               setIncludeDetails={setIncludeDetails}
               onSubmit={handleGenerate}
-              isLoading={generating}
+              onCorrect={handleCorrectRequirements}
+              isGenerating={generating}
+              isCorrecting={correcting}
             />
           </div>
 

@@ -50,6 +50,10 @@ const correctRequirementsFlow = ai.defineFlow(
     outputSchema: CorrectRequirementsOutputSchema,
   },
   async input => {
+    // Don't correct very short strings
+    if (input.requirements.length < 10) {
+      return { correctedRequirements: input.requirements };
+    }
     const {output} = await prompt(input);
     return output!;
   }

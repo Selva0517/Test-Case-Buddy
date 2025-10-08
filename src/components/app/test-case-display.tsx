@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
-import { MoreHorizontal, Download, Trash2, Eye, FileText, FileSpreadsheet } from 'lucide-react';
+import { Download, Trash2, Eye, FileText, FileSpreadsheet, TestTube2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -31,6 +32,14 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
   const { toast } = useToast();
 
   const handleExport = (format: 'csv' | 'txt') => {
+    if (testCases.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No Test Cases",
+        description: "There are no test cases to export.",
+      });
+      return;
+    }
     const message = format === 'csv' ? exportToCsv(testCases) : exportToTxt(testCases);
     toast({
       title: 'Export Successful',
@@ -77,7 +86,6 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
     }
   };
 
-
   return (
     <Card className="h-full shadow-lg bg-card/50 backdrop-blur-sm">
       <CardHeader>
@@ -86,32 +94,30 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
             <CardTitle>Generated Cases</CardTitle>
             <CardDescription>Review, manage, and export your test cases.</CardDescription>
           </div>
-          {testCases.length > 0 && (
-            <div className="flex items-center gap-2">
-               <Button variant="outline" size="sm" onClick={onClear}>
-                <Trash2 className="h-4 w-4 mr-2" />
-                Clear
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleExport('csv')}>
-                    <FileSpreadsheet className="mr-2 h-4 w-4" />
-                    <span>Export as CSV</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleExport('txt')}>
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Export as TXT</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+             <Button variant="outline" size="sm" onClick={onClear} disabled={testCases.length === 0}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Clear
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" disabled={testCases.length === 0}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleExport('csv')}>
+                  <FileSpreadsheet className="mr-2 h-4 w-4" />
+                  <span>Export as CSV</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('txt')}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Export as TXT</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -157,9 +163,9 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                   <TableRow>
                     <TableCell colSpan={5} className="h-48 text-center">
                        <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                          <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-primary"></div>
-                          <p className="font-medium">No test cases yet.</p>
-                          <p className="text-sm">Enter requirements to get started.</p>
+                          <TestTube2 className="w-16 h-16 text-primary/20" />
+                          <p className="font-medium">No test cases generated yet.</p>
+                          <p className="text-sm">Enter requirements and click &quot;Generate&quot; to start.</p>
                         </div>
                     </TableCell>
                   </TableRow>
@@ -225,7 +231,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                      <Select value={selectedCase.priority} onValueChange={(value) => setSelectedCase({...selectedCase, priority: value as any})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Priority" />
-                      </SelectTrigger>
+                      </Trigger>
                       <SelectContent>
                         <SelectItem value="Low">Low</SelectItem>
                         <SelectItem value="Medium">Medium</SelectItem>
@@ -238,7 +244,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                      <Select value={selectedCase.severity} onValueChange={(value) => setSelectedCase({...selectedCase, severity: value as any})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Severity" />
-                      </SelectTrigger>
+                      </Trigger>
                       <SelectContent>
                         <SelectItem value="Low">Low</SelectItem>
                         <SelectItem value="Medium">Medium</SelectItem>

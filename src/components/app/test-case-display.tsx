@@ -79,7 +79,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
 
 
   return (
-    <Card className="h-full shadow-lg">
+    <Card className="h-full shadow-lg bg-card/50 backdrop-blur-sm">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -136,7 +136,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                   ))
                 ) : testCases.length > 0 ? (
                   testCases.map((testCase) => (
-                    <TableRow key={testCase.id}>
+                    <TableRow key={testCase.id} className="hover:bg-muted/20">
                       <TableCell className="font-mono text-xs">{testCase.id}</TableCell>
                       <TableCell className="font-medium max-w-xs truncate">{testCase.title}</TableCell>
                       <TableCell>

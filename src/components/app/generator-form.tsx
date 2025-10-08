@@ -31,7 +31,7 @@ export default function GeneratorForm({
   };
 
   return (
-    <Card className="h-full shadow-lg">
+    <Card className="h-full shadow-lg bg-card/50 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Wand2 className="h-6 w-6 text-primary" />

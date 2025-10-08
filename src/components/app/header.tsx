@@ -1,6 +1,6 @@
 
 'use client';
-import { FlaskConical, Github, Twitter } from 'lucide-react';
+import { FlaskConical } from 'lucide-react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 
@@ -36,19 +36,7 @@ export default function Header() {
         </Link>
       </nav>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="https://github.com" target="_blank">
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </Link>
-        </Button>
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="https://twitter.com" target="_blank">
-            <Twitter className="h-5 w-5" />
-            <span className="sr-only">Twitter</span>
-          </Link>
-        </Button>
-        <Button>Sign In</Button>
+        {/* Social links and sign-in button removed */}
       </div>
     </header>
   );

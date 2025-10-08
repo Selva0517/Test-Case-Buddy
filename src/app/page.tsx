@@ -13,21 +13,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 
-function parseGeneratedCases(text: string): TestCase[] {
-  if (!text) return [];
-  const cases = text.split(/---|\n\n(?=Test Case \d+:)/).filter(Boolean);
-  return cases.map((caseText, index) => {
-    const lines = caseText.trim().split('\n');
-    const title = lines[0].replace(/^(Test Case \d+: ?)/, '').trim();
-    const description = lines.slice(1).join('\n').trim();
-    return {
-      id: `tc-${Date.now()}-${index}`,
-      title: title || `Test Case ${index + 1}`,
-      description: description || 'No description provided.',
-    };
-  });
-}
-
 export default function Home() {
   const [requirements, setRequirements] = useState('');
   const [includeDetails, setIncludeDetails] = useState(true);
@@ -52,8 +37,15 @@ export default function Home() {
     setTestCases([]);
     try {
       const result = await generateTestCasesFromRequirements({ requirements, includeDetails });
-      const parsedCases = parseGeneratedCases(result.testCases);
+      const parsedCases = result.testCases.map((tc, index) => ({
+        ...tc,
+        id: `TC-${Date.now()}-${index}`,
+        actualResult: '',
+        status: 'Not Executed',
+        comments: '',
+      }));
       setTestCases(parsedCases);
+
       if (parsedCases.length === 0) {
         toast({
           title: "Generation Complete",
@@ -97,6 +89,11 @@ export default function Home() {
       description: "Generated test cases have been cleared.",
     })
   };
+  
+  const handleUpdateTestCase = (updatedCase: TestCase) => {
+    setTestCases(prev => prev.map(tc => tc.id === updatedCase.id ? updatedCase : tc));
+  };
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background/80">
@@ -131,6 +128,7 @@ export default function Home() {
                   testCases={testCases} 
                   onClear={handleClear} 
                   isLoading={generating}
+                  onUpdateTestCase={handleUpdateTestCase}
                 />
               </TabsContent>
 

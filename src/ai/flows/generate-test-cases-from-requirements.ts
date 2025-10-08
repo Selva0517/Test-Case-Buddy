@@ -10,24 +10,44 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const TestCaseSchema = z.object({
+  title: z.string().describe('The title of the test case.'),
+  description: z.string().describe('A brief description of the test case.'),
+  preconditions: z.string().describe('The preconditions for the test case.'),
+  steps: z
+    .array(z.string())
+    .describe('The steps to execute for the test case.'),
+  expectedResult: z.string().describe('The expected result of the test case.'),
+  priority: z
+    .enum(['Low', 'Medium', 'High'])
+    .describe('The priority of the test case.'),
+  severity: z
+    .enum(['Low', 'Medium', 'High', 'Critical'])
+    .describe('The severity of the test case.'),
+});
+
 const GenerateTestCasesFromRequirementsInputSchema = z.object({
   requirements: z
     .string()
     .describe('The software requirements to generate test cases for.'),
-  includeDetails: z.boolean().describe('Whether to include detailed steps in the test cases.'),
+  includeDetails: z
+    .boolean()
+    .describe('Whether to include detailed steps in the test cases.'),
 });
 
-export type GenerateTestCasesFromRequirementsInput =
-  z.infer<typeof GenerateTestCasesFromRequirementsInputSchema>;
+export type GenerateTestCasesFromRequirementsInput = z.infer<
+  typeof GenerateTestCasesFromRequirementsInputSchema
+>;
 
 const GenerateTestCasesFromRequirementsOutputSchema = z.object({
   testCases: z
-    .string()
+    .array(TestCaseSchema)
     .describe('The generated test cases covering various scenarios.'),
 });
 
-export type GenerateTestCasesFromRequirementsOutput =
-  z.infer<typeof GenerateTestCasesFromRequirementsOutputSchema>;
+export type GenerateTestCasesFromRequirementsOutput = z.infer<
+  typeof GenerateTestCasesFromRequirementsOutputSchema
+>;
 
 export async function generateTestCasesFromRequirements(
   input: GenerateTestCasesFromRequirementsInput
@@ -43,7 +63,18 @@ const prompt = ai.definePrompt({
   output: {
     schema: GenerateTestCasesFromRequirementsOutputSchema,
   },
-  prompt: `You are a test case generation expert. Generate test cases based on the following software requirements, covering various scenarios and edge cases.\n\nRequirements: {{{requirements}}}\n\nInclude Details: {{#if includeDetails}}Yes{{else}}No{{/if}}\n\nTest Cases:`, // Modified prompt to use Handlebars syntax for includeDetails
+  prompt: `You are a test case generation expert. Generate a comprehensive set of test cases based on the following software requirements. For each test case, provide a title, description, preconditions, detailed test steps, expected result, priority, and severity.
+
+Requirements: {{{requirements}}}
+
+{{#if includeDetails}}
+Generate detailed test cases including preconditions, step-by-step instructions, and expected outcomes.
+{{else}}
+Generate high-level test cases with titles and descriptions.
+{{/if}}
+
+Generate the test cases in the requested JSON format.
+`,
 });
 
 const generateTestCasesFromRequirementsFlow = ai.defineFlow(

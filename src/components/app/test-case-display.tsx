@@ -231,7 +231,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                      <Select value={selectedCase.priority} onValueChange={(value) => setSelectedCase({...selectedCase, priority: value as any})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Priority" />
-                      </Trigger>
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Low">Low</SelectItem>
                         <SelectItem value="Medium">Medium</SelectItem>
@@ -244,7 +244,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                      <Select value={selectedCase.severity} onValueChange={(value) => setSelectedCase({...selectedCase, severity: value as any})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Severity" />
-                      </Trigger>
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Low">Low</SelectItem>
                         <SelectItem value="Medium">Medium</SelectItem>

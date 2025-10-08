@@ -31,17 +31,20 @@ export default function GeneratorForm({
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full shadow-lg">
       <CardHeader>
-        <CardTitle>Test Requirements</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Wand2 className="h-6 w-6 text-primary" />
+          Test Requirements
+        </CardTitle>
         <CardDescription>
-          Enter your software requirements or user story. The more detailed, the better the test cases.
+          Enter a user story or requirement. The more detailed it is, the better the test cases.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="grid w-full gap-2">
-            <Label htmlFor="requirements">Requirements</Label>
+            <Label htmlFor="requirements" className="font-semibold">Requirements</Label>
             <Textarea
               id="requirements"
               placeholder="e.g., As a user, I should be able to reset my password via a link sent to my email."
@@ -51,8 +54,8 @@ export default function GeneratorForm({
               disabled={isLoading}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between rounded-lg border p-3">
+            <div className="flex items-center space-x-3">
               <Switch 
                 id="include-details" 
                 checked={includeDetails}
@@ -61,7 +64,7 @@ export default function GeneratorForm({
               />
               <Label htmlFor="include-details">Include detailed steps</Label>
             </div>
-            <Button type="submit" disabled={isLoading || !requirements}>
+            <Button type="submit" disabled={isLoading || !requirements} size="lg">
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" />

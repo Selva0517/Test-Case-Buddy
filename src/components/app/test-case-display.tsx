@@ -61,10 +61,27 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
     setDetailViewOpen(open);
   }
 
+  const getPriorityBadgeVariant = (priority: 'High' | 'Medium' | 'Low') => {
+    switch (priority) {
+      case 'High': return 'destructive';
+      case 'Medium': return 'secondary';
+      default: return 'outline';
+    }
+  };
+
+  const getStatusBadgeVariant = (status: 'Pass' | 'Fail' | 'Not Executed') => {
+    switch (status) {
+      case 'Pass': return 'default';
+      case 'Fail': return 'destructive';
+      default: return 'outline';
+    }
+  };
+
+
   return (
-    <Card className="h-full">
+    <Card className="h-full shadow-lg">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div>
             <CardTitle>Generated Cases</CardTitle>
             <CardDescription>Review, manage, and export your test cases.</CardDescription>
@@ -84,12 +101,12 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => handleExport('csv')}>
-                    <FileSpreadsheet className="mr-2" />
-                    Export as CSV
+                    <FileSpreadsheet className="mr-2 h-4 w-4" />
+                    <span>Export as CSV</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleExport('txt')}>
-                    <FileText className="mr-2" />
-                    Export as TXT
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>Export as TXT</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -99,22 +116,22 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
-          <ScrollArea className="h-[450px]">
+          <ScrollArea className="h-[450px] pr-1">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
+                  <TableHead className="w-[120px]">ID</TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Priority</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="w-[100px] text-right">Actions</TableHead>
+                  <TableHead className="w-[80px] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   [...Array(5)].map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell colSpan={5}><div className="h-6 w-full animate-pulse rounded-md bg-muted" /></TableCell>
+                      <TableCell colSpan={5}><div className="h-8 w-full animate-pulse rounded-md bg-muted" /></TableCell>
                     </TableRow>
                   ))
                 ) : testCases.length > 0 ? (
@@ -123,10 +140,10 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                       <TableCell className="font-mono text-xs">{testCase.id}</TableCell>
                       <TableCell className="font-medium max-w-xs truncate">{testCase.title}</TableCell>
                       <TableCell>
-                        <Badge variant={testCase.priority === 'High' ? 'destructive' : 'secondary'}>{testCase.priority}</Badge>
+                        <Badge variant={getPriorityBadgeVariant(testCase.priority)}>{testCase.priority}</Badge>
                       </TableCell>
                        <TableCell>
-                        <Badge variant={testCase.status === 'Pass' ? 'default' : testCase.status === 'Fail' ? 'destructive' : 'outline'}>{testCase.status}</Badge>
+                        <Badge variant={getStatusBadgeVariant(testCase.status)}>{testCase.status}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="icon" onClick={() => handleViewDetails(testCase)}>
@@ -138,8 +155,12 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      No test cases generated yet.
+                    <TableCell colSpan={5} className="h-48 text-center">
+                       <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                          <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-primary"></div>
+                          <p className="font-medium">No test cases yet.</p>
+                          <p className="text-sm">Enter requirements to get started.</p>
+                        </div>
                     </TableCell>
                   </TableRow>
                 )}
@@ -157,23 +178,23 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
               {selectedCase?.title}
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[70vh]">
+          <ScrollArea className="max-h-[70vh] pr-6">
             {selectedCase && (
                <div className="grid gap-6 p-1">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold mb-2">Description</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/20">{selectedCase.description}</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/50">{selectedCase.description}</p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Preconditions</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/20">{selectedCase.preconditions}</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/50">{selectedCase.preconditions}</p>
                   </div>
                 </div>
 
                 <div>
                   <h4 className="font-semibold mb-2">Test Steps</h4>
-                  <div className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/20">
+                  <div className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/50">
                     <ol className="list-decimal list-inside space-y-2">
                       {selectedCase.steps.map((step, i) => <li key={i}>{step}</li>)}
                     </ol>
@@ -182,7 +203,7 @@ export default function TestCaseDisplay({ testCases, onClear, isLoading, onUpdat
 
                 <div>
                   <h4 className="font-semibold mb-2">Expected Result</h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/20">{selectedCase.expectedResult}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap p-3 rounded-md border bg-muted/50">{selectedCase.expectedResult}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

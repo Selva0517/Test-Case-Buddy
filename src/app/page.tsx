@@ -96,10 +96,10 @@ export default function Home() {
 
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background/80">
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <Header />
       <main className="flex-1 p-4 sm:p-6 md:p-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 xl:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-7 xl:grid-cols-3">
           
           <div className="lg:col-span-3 xl:col-span-1">
             <GeneratorForm 
@@ -149,7 +149,7 @@ export default function Home() {
                         ))}
                       </div>
                     ) : testCaseIdeas.length > 0 ? (
-                      <ScrollArea className="h-[450px]">
+                      <ScrollArea className="h-[450px] pr-4">
                         <ul className="space-y-3 text-sm">
                           {testCaseIdeas.map((idea, index) => (
                             <li key={index} className="rounded-md border p-3 font-mono text-xs transition-colors hover:bg-muted/50">
@@ -159,7 +159,7 @@ export default function Home() {
                         </ul>
                       </ScrollArea>
                     ) : (
-                      <div className="flex h-[200px] items-center justify-center text-center text-sm text-muted-foreground">
+                      <div className="flex h-[200px] items-center justify-center rounded-lg border-2 border-dashed text-center text-sm text-muted-foreground">
                         <p>Click &quot;Get Ideas&quot; to see suggestions here.</p>
                       </div>
                     )}
